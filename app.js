@@ -75,14 +75,36 @@ app.route("/articles/:articleTitle")
 .put(function (req, res) {
   Article.updateOne({ title: req.params.articleTitle },
     { title: req.body.title, content: req.body.content },
-    // { overwrite: true },
+    // { overwrite: true },  // This is not needed as it is the default behaviour
     function (err) {
       if (!err) {
-        res.send("Successfully updated article.");
+        res.send("Successfully updated the selected article.");
       }
     }
   );
 })
+
+.patch(function (req, res) {
+  Article.updateOne({ title: req.params.articleTitle },
+    {$set: req.body}, function (err) {
+      if (!err) {
+        res.send("Successfully updated article.");
+      } else {
+        res.send(err);
+      }
+    }
+  );
+})
+
+.delete(function (req, res) {
+  Article.deleteOne({ title: req.params.articleTitle }, function (err) {
+    if (!err) {
+      res.send("Successfully deleted the corresponding article.");
+    } else {
+      res.send(err);
+    }
+  });
+});
 
 app.listen(3000, function () {
   console.log("Server started on port 3000");
